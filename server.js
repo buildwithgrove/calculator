@@ -25,6 +25,15 @@ app.get('/health', (req, res) => {
     res.json({ status: 'OK', timestamp: new Date().toISOString() });
 });
 
+// Test endpoint for debugging
+app.get('/api/test', (req, res) => {
+    res.json({ 
+        message: 'API is working',
+        timestamp: new Date().toISOString(),
+        environment: process.env.NODE_ENV || 'development'
+    });
+});
+
 // Real POKT price API endpoint
 app.get('/api/pokt-price', async (req, res) => {
     try {
@@ -62,6 +71,13 @@ app.get('/api/pokt-price', async (req, res) => {
         
     } catch (error) {
         console.error('Price fetch error:', error);
+        
+        // Log more details for debugging
+        console.error('Error details:', {
+            name: error.name,
+            message: error.message,
+            stack: error.stack
+        });
         
         // Return a fallback price instead of error for better UX
         res.json({

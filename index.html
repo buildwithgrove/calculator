@@ -440,7 +440,7 @@
                             <div class="input-grid">
                                 <div class="input-wrapper">
                                     <label class="input-label" for="dailyRelays">Daily Relays</label>
-                                    <input class="input-field" type="text" id="dailyRelays" value="50,000,000">
+                                    <input class="input-field" type="text" id="dailyRelays" value="1,000,000,000">
                                 </div>
                                 <div class="input-wrapper">
                                     <label class="input-label" for="cusPerRelay">Compute Units per Relay (Approximation)</label>
@@ -613,7 +613,18 @@
                 
             } catch (error) {
                 console.error('Price fetch error:', error);
-                statusDiv.textContent = 'Price update failed - check network connection';
+                
+                // More specific error messages
+                let errorMessage = 'Price update failed';
+                if (error.name === 'TypeError' && error.message.includes('fetch')) {
+                    errorMessage = 'Network error - check connection';
+                } else if (error.message.includes('Failed to fetch')) {
+                    errorMessage = 'Server unavailable - try again later';
+                } else {
+                    errorMessage = `Error: ${error.message}`;
+                }
+                
+                statusDiv.textContent = errorMessage;
                 statusDiv.style.color = 'hsl(var(--destructive))';
                 
                 // Don't update the price input, keep the current value
@@ -744,6 +755,12 @@
         });
 
         // Auto-refresh price every 10 minutes (real API has rate limits)
+        // Test API connectivity first
+        fetch('/api/test')
+            .then(response => response.json())
+            .then(data => console.log('API test successful:', data))
+            .catch(error => console.error('API test failed:', error));
+        
         setInterval(fetchPOKTPrice, 5 * 60 * 1000);
     </script>
 </body>
