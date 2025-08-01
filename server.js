@@ -28,8 +28,19 @@ app.get('/health', (req, res) => {
 // Real POKT price API endpoint
 app.get('/api/pokt-price', async (req, res) => {
     try {
+        // Set timeout for the fetch request (8 seconds to stay under Vercel's 10s limit)
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 8000);
+        
         // Fetch real POKT price from CoinGecko API
-        const response = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=pocket-network&vs_currencies=usd');
+        const response = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=pocket-network&vs_currencies=usd', {
+            signal: controller.signal,
+            headers: {
+                'User-Agent': 'Pocket-Network-Calculator/1.0'
+            }
+        });
+        
+        clearTimeout(timeoutId);
         
         if (!response.ok) {
             throw new Error(`CoinGecko API error: ${response.status}`);
@@ -52,11 +63,13 @@ app.get('/api/pokt-price', async (req, res) => {
     } catch (error) {
         console.error('Price fetch error:', error);
         
-        // Return error response instead of fallback
-        res.status(500).json({
-            error: 'Failed to fetch POKT price',
-            message: error.message,
-            timestamp: new Date().toISOString()
+        // Return a fallback price instead of error for better UX
+        res.json({
+            price: 0.01, // Fallback price
+            timestamp: new Date().toISOString(),
+            currency: 'USD',
+            source: 'Fallback',
+            error: error.message
         });
     }
 });
