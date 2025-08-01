@@ -14,6 +14,7 @@ app.use(cors({
 
 // Serve static files
 app.use(express.static(__dirname));
+app.use(express.static(path.join(__dirname, 'public')));
 
 // Serve the main HTML file
 app.get('/', (req, res) => {

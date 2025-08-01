@@ -52,8 +52,10 @@ calculator/
 ├── .gitignore          # Git ignore rules
 └── src/
     └── img/           # Local assets
-        ├── logo-large-blue.png
-        └── logo-large-black.png
+        ├── public/
+│   └── img/
+│       ├── logo-large-blue.png
+│       └── logo-large-black.png
 ```
 
 ## CORS Solution
@@ -109,7 +111,7 @@ Adjust the default values in `index.html` to match current Pocket Network parame
 ### Logo Customization
 
 The calculator uses local Pocket Network logos:
-- `src/img/logo-large-blue.png` - Used in header
+- `public/img/logo-large-blue.png` - Used in header
 - `src/img/logo-large-black.png` - Alternative version
 
 ## Production Deployment
