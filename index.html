@@ -784,22 +784,30 @@
             const poktPrice = parseFloat(document.getElementById('poktPrice').value) || 0;
             const daysPerYear = 365;
 
-            const dailyPoktGenerated = dailyRelays * cusPerRelay * 1e-9;
-            const annualPoktGenerated = dailyPoktGenerated * daysPerYear;
+            // Calculate daily protocol revenue using the formula:
+            // Relays × CUs_per_relay × 1e-9 USD
+            const dailyProtocolRevenue = dailyRelays * cusPerRelay * 1e-9;
+            const annualProtocolRevenue = dailyProtocolRevenue * daysPerYear;
             
-            const dailyProtocolRevenue = dailyPoktGenerated * poktPrice;
-            const annualProtocolRevenue = annualPoktGenerated * poktPrice;
+            // Calculate daily POKT minted by dividing revenue by POKT price
+            const dailyPoktMinted = poktPrice > 0 ? dailyProtocolRevenue / poktPrice : 0;
+            const annualMint = dailyPoktMinted * daysPerYear;
             
-            const validatorPoolValue = annualProtocolRevenue * (validatorShare / 100);
-            const daoPoolValue = annualProtocolRevenue * (daoShare / 100);
-            const supplierPoolValue = annualProtocolRevenue * (supplierShare / 100);
-            const sourceOwnerPoolValue = annualProtocolRevenue * (sourceOwnerShare / 100);
-
+            // Calculate pool values for each participant
+            const validatorPool = annualMint * (validatorShare / 100);
+            const daoPool = annualMint * (daoShare / 100);
+            const supplierPool = annualMint * (supplierShare / 100);
+            const sourceOwnerPool = annualMint * (sourceOwnerShare / 100);
+            
+            const validatorPoolValue = validatorPool * poktPrice;
+            const daoPoolValue = daoPool * poktPrice;
+            const supplierPoolValue = supplierPool * poktPrice;
+            const sourceOwnerPoolValue = sourceOwnerPool * poktPrice;
 
             // Update main metrics
-            document.getElementById('dailyMint').textContent = formatNumber(dailyPoktGenerated, 2);
-            document.getElementById('annualMint').textContent = formatNumber(annualPoktGenerated, 0);
-            document.getElementById('dailyRevenue').textContent = formatCurrency(dailyProtocolRevenue, 0);
+            document.getElementById('dailyMint').textContent = formatNumber(dailyPoktMinted, 2);
+            document.getElementById('annualMint').textContent = formatNumber(annualMint, 0);
+            document.getElementById('dailyRevenue').textContent = formatCurrency(dailyProtocolRevenue, 2);
             document.getElementById('annualRevenue').textContent = formatCurrency(annualProtocolRevenue, 0);
             
             // Update reward pools
@@ -807,8 +815,6 @@
             document.getElementById('validatorPoolValue').textContent = formatCurrency(validatorPoolValue, 0);
             document.getElementById('daoPoolValue').textContent = formatCurrency(daoPoolValue, 0);
             document.getElementById('sourceOwnerPoolValue').textContent = formatCurrency(sourceOwnerPoolValue, 0);
-
-
         }
 
         // Add event listeners with debouncing for smooth performance
