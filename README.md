@@ -6,7 +6,7 @@ A beautiful, interactive calculator for visualizing Pocket Network protocol reve
 
 - 🎯 **Real-time Calculations**: Instant updates as you adjust network parameters
 - 📊 **Visual Metrics**: Clear display of daily/annual POKT generation and revenue
-- 💰 **Reward Distribution**: Breakdown of rewards for suppliers, validators, DAO, and service owners
+- 💰 **Reward Distribution**: Breakdown of rewards for suppliers, validators, DAO, and source owners
 - 🎨 **Modern UI**: Beautiful gradient design with Pocket Network branding
 - 🔄 **Live Price Updates**: Real POKT price data from CoinGecko API
 - 🏷️ **Local Assets**: Uses local Pocket Network logo and optimized assets
@@ -104,7 +104,7 @@ Adjust the default values in `index.html` to match current Pocket Network parame
   - Supplier Share: 78%
   - Validator Share: 14%
   - DAO Share: 5%
-  - Service Owner Share: 3%
+  - Source Owner Share: 3%
 
 ### Logo Customization
 
