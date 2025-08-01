@@ -50,12 +50,10 @@ calculator/
 ├── server.js           # Express server with CORS handling
 ├── package.json        # Dependencies and scripts
 ├── .gitignore          # Git ignore rules
-└── src/
-    └── img/           # Local assets
-        ├── public/
-│   └── img/
-│       ├── logo-large-blue.png
-│       └── logo-large-black.png
+└── public/             # Static assets
+    └── img/
+        ├── logo-large-blue.png
+        └── logo-large-black.png
 ```
 
 ## CORS Solution
@@ -112,7 +110,7 @@ Adjust the default values in `index.html` to match current Pocket Network parame
 
 The calculator uses local Pocket Network logos:
 - `public/img/logo-large-blue.png` - Used in header
-- `src/img/logo-large-black.png` - Alternative version
+- `public/img/logo-large-black.png` - Alternative version
 
 ## Production Deployment
 
