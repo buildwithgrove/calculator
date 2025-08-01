@@ -922,9 +922,9 @@
                 
                 let message = '';
                 if (total > 100) {
-                    message = `⚠️ Total percentage exceeds 100% (${total.toFixed(1)}%). This may affect calculations.`;
+                    message = `⚠️ Total percentage exceeds 100% (${total.toFixed(1)}%). This will affect calculations.`;
                 } else if (total < 100) {
-                    message = `⚠️ Total percentage is below 100% (${total.toFixed(1)}%). This may affect calculations.`;
+                    message = `⚠️ Total percentage is below 100% (${total.toFixed(1)}%). This will affect calculations.`;
                 }
                 
                 document.getElementById('totalPercentageWarning').textContent = message;
