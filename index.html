@@ -440,7 +440,7 @@
                             <div class="input-grid">
                                 <div class="input-wrapper">
                                     <label class="input-label" for="dailyRelays">Daily Relays</label>
-                                    <input class="input-field" type="number" id="dailyRelays" value="50000000" step="1000000">
+                                    <input class="input-field" type="text" id="dailyRelays" value="50,000,000">
                                 </div>
                                 <div class="input-wrapper">
                                     <label class="input-label" for="cusPerRelay">Compute Units per Relay (Approximation)</label>
@@ -616,8 +616,28 @@
             }
         }
 
+        // Format number with commas
+        function formatWithCommas(value) {
+            return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+        }
+
+        // Remove commas and parse as number
+        function parseCommaNumber(value) {
+            return parseFloat(value.replace(/,/g, '')) || 0;
+        }
+
+        // Format daily relays input with commas
+        function formatDailyRelays() {
+            const input = document.getElementById('dailyRelays');
+            const value = input.value.replace(/,/g, '');
+            const numericValue = parseFloat(value);
+            if (!isNaN(numericValue)) {
+                input.value = formatWithCommas(numericValue);
+            }
+        }
+
         function calculate() {
-            const dailyRelays = parseFloat(document.getElementById('dailyRelays').value) || 0;
+            const dailyRelays = parseCommaNumber(document.getElementById('dailyRelays').value);
             const cusPerRelay = parseFloat(document.getElementById('cusPerRelay').value) || 0;
             const validatorShare = parseFloat(document.getElementById('validatorShare').value) || 0;
             const daoShare = parseFloat(document.getElementById('daoShare').value) || 0;
@@ -660,6 +680,14 @@
                 clearTimeout(timeout);
                 timeout = setTimeout(calculate, 100);
             });
+        });
+
+        // Add comma formatting for daily relays input
+        document.getElementById('dailyRelays').addEventListener('blur', formatDailyRelays);
+        document.getElementById('dailyRelays').addEventListener('input', () => {
+            // Allow typing but don't format immediately to avoid cursor jumping
+            clearTimeout(timeout);
+            timeout = setTimeout(calculate, 100);
         });
 
         // Add price refresh functionality
