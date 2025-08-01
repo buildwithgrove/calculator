@@ -636,6 +636,28 @@
             }
         }
 
+        // Format daily relays as user types
+        function formatDailyRelaysOnInput(event) {
+            const input = event.target;
+            const cursorPosition = input.selectionStart;
+            const value = input.value.replace(/,/g, '');
+            const numericValue = parseFloat(value);
+            
+            if (!isNaN(numericValue)) {
+                const formattedValue = formatWithCommas(numericValue);
+                input.value = formattedValue;
+                
+                // Calculate new cursor position after formatting
+                const commasBeforeCursor = (input.value.substring(0, cursorPosition).match(/,/g) || []).length;
+                const newCommasBeforeCursor = (formattedValue.substring(0, cursorPosition).match(/,/g) || []).length;
+                const cursorOffset = newCommasBeforeCursor - commasBeforeCursor;
+                
+                // Set cursor position accounting for added/removed commas
+                const newPosition = cursorPosition + cursorOffset;
+                input.setSelectionRange(newPosition, newPosition);
+            }
+        }
+
         function calculate() {
             const dailyRelays = parseCommaNumber(document.getElementById('dailyRelays').value);
             const cusPerRelay = parseFloat(document.getElementById('cusPerRelay').value) || 0;
@@ -684,8 +706,8 @@
 
         // Add comma formatting for daily relays input
         document.getElementById('dailyRelays').addEventListener('blur', formatDailyRelays);
-        document.getElementById('dailyRelays').addEventListener('input', () => {
-            // Allow typing but don't format immediately to avoid cursor jumping
+        document.getElementById('dailyRelays').addEventListener('input', (event) => {
+            formatDailyRelaysOnInput(event);
             clearTimeout(timeout);
             timeout = setTimeout(calculate, 100);
         });
