@@ -10,6 +10,7 @@ A beautiful, interactive calculator for visualizing Pocket Network protocol reve
 - 🎨 **Modern UI**: Beautiful gradient design with Pocket Network branding
 - 🔄 **Live Price Updates**: Real POKT price data from CoinGecko API
 - 🏷️ **Local Assets**: Uses local Pocket Network logo and optimized assets
+- 💱 **Smart Formatting**: Comma-separated numbers for better readability
 
 ## Quick Start
 
@@ -48,11 +49,11 @@ calculator/
 ├── index.html          # Main calculator interface
 ├── server.js           # Express server with CORS handling
 ├── package.json        # Dependencies and scripts
-├── src/
-│   └── img/           # Local assets
-│       ├── logo-large-blue.png
-│       └── logo-large-black.png
-└── pokt-calculator/   # Modern Next.js version (in development)
+├── .gitignore          # Git ignore rules
+└── src/
+    └── img/           # Local assets
+        ├── logo-large-blue.png
+        └── logo-large-black.png
 ```
 
 ## CORS Solution
@@ -71,12 +72,19 @@ This project includes a proper CORS setup to prevent cross-origin issues:
 
 ## Recent Updates
 
+### Latest Features
+- ✅ **Comma Formatting**: Daily relays input now shows commas as you type
+- ✅ **Real-time Price Updates**: Live POKT price from CoinGecko API
+- ✅ **Optimized UI**: Clean, modern interface with Pocket Network branding
+- ✅ **Smart Input Handling**: Intelligent cursor positioning during number formatting
+
 ### Cleanup and Optimization
 - ✅ Removed unused CSS classes and variables
 - ✅ Optimized logo usage with local assets
 - ✅ Streamlined codebase for better maintainability
 - ✅ Removed redundant animations and effects
 - ✅ Updated to use Pocket Network blue logo
+- ✅ Simplified project structure (single working version)
 
 ### Features Removed
 - Hero preview stats (simplified header)
@@ -117,7 +125,7 @@ app.get('/api/pokt-price', async (req, res) => {
 
 Adjust the default values in `index.html` to match current Pocket Network parameters:
 
-- **Daily Relays**: 50,000,000 (default)
+- **Daily Relays**: 50,000,000 (default) - with comma formatting
 - **CUs per Relay**: 2,500 (approximation)
 - **POKT Price**: Auto-fetched from CoinGecko
 - **Reward Distribution**:
@@ -134,7 +142,19 @@ The calculator uses local Pocket Network logos:
 
 ## Production Deployment
 
-For production deployment:
+### Vercel Deployment
+
+This project is optimized for Vercel deployment:
+
+1. **Connect your GitHub repository to Vercel**
+2. **Vercel will auto-detect** it as a Node.js project
+3. **Build Command**: `npm install`
+4. **Output Directory**: Root directory
+5. **Install Command**: `npm install`
+
+### Traditional Deployment
+
+For traditional server deployment:
 
 1. Set environment variables:
 ```bash
@@ -157,21 +177,33 @@ npm install -g pm2
 pm2 start server.js --name "pocket-calculator"
 ```
 
-## Modern Version (Next.js)
+## Development
 
-A modern React/Next.js version is available in the `pokt-calculator/` directory:
+### Local Development
 
+1. Clone the repository:
 ```bash
-cd pokt-calculator
+git clone https://github.com/buildwithgrove/calculator.git
+cd calculator
+```
+
+2. Install dependencies:
+```bash
 npm install
+```
+
+3. Start development server:
+```bash
 npm run dev
 ```
 
-This version features:
-- TypeScript for type safety
-- Component-based architecture
-- Tailwind CSS for styling
-- Modular code structure
+4. Open http://localhost:3000 in your browser
+
+### Making Changes
+
+- **HTML/CSS/JS**: Edit `index.html` for UI changes
+- **Server Logic**: Modify `server.js` for API changes
+- **Dependencies**: Update `package.json` for new packages
 
 ## License
 
