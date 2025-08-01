@@ -473,6 +473,27 @@
             .metrics-grid {
                 grid-template-columns: 1fr;
             }
+            
+            .metric-label {
+                font-size: 0.7rem;
+                line-height: 1.2;
+                word-wrap: break-word;
+                hyphens: auto;
+            }
+            
+            .metric-value {
+                font-size: 1.75rem;
+            }
+        }
+        
+        @media (max-width: 360px) {
+            .metric-label {
+                font-size: 0.65rem;
+            }
+            
+            .metric-value {
+                font-size: 1.5rem;
+            }
         }
 
 
