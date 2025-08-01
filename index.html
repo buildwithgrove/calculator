@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Pocket Network Economics Calculator</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <style>
@@ -189,6 +189,7 @@
             color: hsl(var(--foreground));
             transition: all 0.2s ease;
             font-family: 'Inter', sans-serif;
+            min-height: 44px; /* Better touch target for mobile */
         }
 
         .input-field:focus {
@@ -376,28 +377,100 @@
 
         @media (max-width: 768px) {
             .hero-content h1 {
-                font-size: 2rem;
+                font-size: 1.75rem;
+                margin-bottom: 0.5rem;
             }
 
             .hero-content p {
-                font-size: 1.2rem;
+                font-size: 0.875rem;
             }
 
             .main-container {
-                padding: 40px 20px;
-                margin-top: -40px;
+                padding: 1rem;
+                margin: 0;
             }
 
             .inputs-section,
             .results-card {
-                padding: 24px;
+                padding: 1.5rem;
             }
 
             .metrics-grid {
                 grid-template-columns: 1fr 1fr;
+                gap: 1rem;
             }
 
             .rewards-grid {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+            
+            .reward-card {
+                padding: 1rem;
+            }
+            
+            .reward-title {
+                font-size: 0.875rem;
+            }
+            
+            .reward-value {
+                font-size: 1.25rem;
+            }
+            
+            .reward-subtitle {
+                font-size: 0.75rem;
+            }
+            
+            .input-field {
+                font-size: 0.875rem;
+                padding: 0.75rem;
+            }
+            
+            .input-label {
+                font-size: 0.875rem;
+            }
+            
+            .section-title {
+                font-size: 1.25rem;
+            }
+            
+            .price-input-container {
+                margin-bottom: 0.5rem;
+            }
+            
+            .refresh-button {
+                padding: 6px 10px;
+                font-size: 0.7rem;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .main-container {
+                padding: 0.5rem;
+            }
+            
+            .inputs-section,
+            .results-card {
+                padding: 1rem;
+            }
+            
+            .hero-content h1 {
+                font-size: 1.5rem;
+            }
+            
+            .reward-card {
+                padding: 0.75rem;
+            }
+            
+            .input-field {
+                padding: 0.5rem;
+            }
+            
+            .section-title {
+                font-size: 1.125rem;
+            }
+            
+            .metrics-grid {
                 grid-template-columns: 1fr;
             }
         }
