@@ -93,34 +93,6 @@ This project includes a proper CORS setup to prevent cross-origin issues:
 
 ## Customization
 
-### Price Data Source
-
-The calculator uses real POKT price data from the CoinGecko API. The `/api/pokt-price` endpoint fetches live price data and includes proper error handling.
-
-If you need to switch to a different price API, modify the endpoint in `server.js`:
-
-```javascript
-app.get('/api/pokt-price', async (req, res) => {
-    try {
-        // Replace with your preferred price API
-        const response = await fetch('YOUR_API_ENDPOINT');
-        const data = await response.json();
-        res.json({
-            price: data.price,
-            timestamp: new Date().toISOString(),
-            currency: 'USD',
-            source: 'YourAPI'
-        });
-    } catch (error) {
-        res.status(500).json({
-            error: 'Failed to fetch POKT price',
-            message: error.message,
-            timestamp: new Date().toISOString()
-        });
-    }
-});
-```
-
 ### Network Parameters
 
 Adjust the default values in `index.html` to match current Pocket Network parameters:
