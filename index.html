@@ -557,23 +557,28 @@
                         </div>
 
                         <div>
-                            <div class="input-group-header">Reward Distribution</div>
+                            <div class="input-group-header">
+                                Reward Distribution
+                                <button id="resetPercentages" style="float: right; background: hsl(var(--chart-1)); color: white; border: none; border-radius: 6px; padding: 4px 8px; font-size: 0.7rem; cursor: pointer; transition: all 0.2s ease;">
+                                    Reset to Default
+                                </button>
+                            </div>
                             <div class="input-grid">
                                 <div class="input-wrapper">
                                     <label class="input-label" for="supplierShare">Supplier Share (%)</label>
-                                    <input class="input-field" type="number" id="supplierShare" value="78" step="0.1">
+                                    <input class="input-field" type="number" id="supplierShare" value="78" step="0.1" min="0" max="100">
                                 </div>
                                 <div class="input-wrapper">
                                     <label class="input-label" for="validatorShare">Validator Share (%)</label>
-                                    <input class="input-field" type="number" id="validatorShare" value="14" step="0.1">
+                                    <input class="input-field" type="number" id="validatorShare" value="14" step="0.1" min="0" max="100">
                                 </div>
                                 <div class="input-wrapper">
                                     <label class="input-label" for="daoShare">DAO Share (%)</label>
-                                    <input class="input-field" type="number" id="daoShare" value="5" step="0.1">
+                                    <input class="input-field" type="number" id="daoShare" value="5" step="0.1" min="0" max="100">
                                 </div>
                                 <div class="input-wrapper">
                                     <label class="input-label" for="sourceOwnerShare">Source Owner Share (%)</label>
-                                    <input class="input-field" type="number" id="sourceOwnerShare" value="3" step="0.1">
+                                    <input class="input-field" type="number" id="sourceOwnerShare" value="3" step="0.1" min="0" max="100">
                                 </div>
                             </div>
                         </div>
@@ -615,7 +620,7 @@
                             <div class="reward-card supplier">
                                 <div class="reward-header">
                                     <div class="reward-title">Suppliers</div>
-                                    <div class="reward-percentage">78%</div>
+                                    <div class="reward-percentage" id="supplierPercentage">78%</div>
                                 </div>
                                 <div class="reward-value" id="supplierPoolValue">$0</div>
                                 <div class="reward-subtitle">Primary infrastructure providers</div>
@@ -624,7 +629,7 @@
                             <div class="reward-card validator">
                                 <div class="reward-header">
                                     <div class="reward-title">Validators</div>
-                                    <div class="reward-percentage">14%</div>
+                                    <div class="reward-percentage" id="validatorPercentage">14%</div>
                                 </div>
                                 <div class="reward-value" id="validatorPoolValue">$0</div>
                                 <div class="reward-subtitle">Network consensus validators</div>
@@ -633,7 +638,7 @@
                             <div class="reward-card dao">
                                 <div class="reward-header">
                                     <div class="reward-title">DAO Treasury</div>
-                                    <div class="reward-percentage">5%</div>
+                                    <div class="reward-percentage" id="daoPercentage">5%</div>
                                 </div>
                                 <div class="reward-value" id="daoPoolValue">$0</div>
                                 <div class="reward-subtitle">Governance and development</div>
@@ -642,7 +647,7 @@
                             <div class="reward-card service">
                                 <div class="reward-header">
                                     <div class="reward-title">Source Owners</div>
-                                    <div class="reward-percentage">3%</div>
+                                    <div class="reward-percentage" id="sourceOwnerPercentage">3%</div>
                                 </div>
                                 <div class="reward-value" id="sourceOwnerPoolValue">$0</div>
                                 <div class="reward-subtitle"> Onchain service registrants</div>
@@ -815,6 +820,12 @@
             document.getElementById('validatorPoolValue').textContent = formatCurrency(validatorPoolValue, 0);
             document.getElementById('daoPoolValue').textContent = formatCurrency(daoPoolValue, 0);
             document.getElementById('sourceOwnerPoolValue').textContent = formatCurrency(sourceOwnerPoolValue, 0);
+            
+            // Update dynamic percentage displays
+            document.getElementById('supplierPercentage').textContent = supplierShare.toFixed(1) + '%';
+            document.getElementById('validatorPercentage').textContent = validatorShare.toFixed(1) + '%';
+            document.getElementById('daoPercentage').textContent = daoShare.toFixed(1) + '%';
+            document.getElementById('sourceOwnerPercentage').textContent = sourceOwnerShare.toFixed(1) + '%';
         }
 
         // Add event listeners with debouncing for smooth performance
@@ -826,6 +837,102 @@
             });
         });
 
+        // Add percentage validation for reward distribution inputs
+        function validatePercentage(input) {
+            const value = parseFloat(input.value) || 0;
+            const maxPercentage = 100;
+            
+            if (value > maxPercentage) {
+                input.value = maxPercentage;
+                input.style.borderColor = 'hsl(var(--destructive))';
+                input.style.backgroundColor = 'hsl(var(--destructive) / 0.05)';
+                
+                // Show warning message
+                const warningId = input.id + 'Warning';
+                let warning = document.getElementById(warningId);
+                if (!warning) {
+                    warning = document.createElement('div');
+                    warning.id = warningId;
+                    warning.style.color = 'hsl(var(--destructive))';
+                    warning.style.fontSize = '0.75rem';
+                    warning.style.marginTop = '4px';
+                    warning.style.fontWeight = '500';
+                    input.parentNode.appendChild(warning);
+                }
+                warning.textContent = `Percentage capped at ${maxPercentage}%`;
+                
+                // Remove warning after 3 seconds
+                setTimeout(() => {
+                    input.style.borderColor = '';
+                    input.style.backgroundColor = '';
+                    if (warning) {
+                        warning.remove();
+                    }
+                }, 3000);
+            } else {
+                input.style.borderColor = '';
+                input.style.backgroundColor = '';
+                const warning = document.getElementById(input.id + 'Warning');
+                if (warning) {
+                    warning.remove();
+                }
+            }
+        }
+
+        // Add validation to percentage inputs
+        const percentageInputs = ['supplierShare', 'validatorShare', 'daoShare', 'sourceOwnerShare'];
+        percentageInputs.forEach(id => {
+            const input = document.getElementById(id);
+            input.addEventListener('input', () => {
+                validatePercentage(input);
+                validateTotalPercentage();
+                clearTimeout(timeout);
+                timeout = setTimeout(calculate, 100);
+            });
+            input.addEventListener('blur', () => {
+                validatePercentage(input);
+                validateTotalPercentage();
+            });
+        });
+
+        // Validate total percentage equals exactly 100%
+        function validateTotalPercentage() {
+            const total = percentageInputs.reduce((sum, id) => {
+                return sum + (parseFloat(document.getElementById(id).value) || 0);
+            }, 0);
+            
+            const totalWarning = document.getElementById('totalPercentageWarning');
+            if (total !== 100) {
+                if (!totalWarning) {
+                    const warning = document.createElement('div');
+                    warning.id = 'totalPercentageWarning';
+                    warning.style.color = 'hsl(var(--destructive))';
+                    warning.style.fontSize = '0.875rem';
+                    warning.style.marginTop = '8px';
+                    warning.style.fontWeight = '500';
+                    warning.style.padding = '8px 12px';
+                    warning.style.backgroundColor = 'hsl(var(--destructive) / 0.1)';
+                    warning.style.borderRadius = '8px';
+                    warning.style.border = '1px solid hsl(var(--destructive) / 0.2)';
+                    
+                    // Insert after the input groups
+                    const inputGroups = document.querySelector('.input-groups');
+                    inputGroups.appendChild(warning);
+                }
+                
+                let message = '';
+                if (total > 100) {
+                    message = `⚠️ Total percentage exceeds 100% (${total.toFixed(1)}%). This may affect calculations.`;
+                } else if (total < 100) {
+                    message = `⚠️ Total percentage is below 100% (${total.toFixed(1)}%). This may affect calculations.`;
+                }
+                
+                document.getElementById('totalPercentageWarning').textContent = message;
+            } else if (totalWarning) {
+                totalWarning.remove();
+            }
+        }
+
         // Add comma formatting for daily relays input
         document.getElementById('dailyRelays').addEventListener('blur', formatDailyRelays);
         document.getElementById('dailyRelays').addEventListener('input', (event) => {
@@ -836,6 +943,28 @@
 
         // Add price refresh functionality
         document.getElementById('refreshPrice').addEventListener('click', fetchPOKTPrice);
+
+        // Add reset percentages functionality
+        document.getElementById('resetPercentages').addEventListener('click', () => {
+            document.getElementById('supplierShare').value = '78';
+            document.getElementById('validatorShare').value = '14';
+            document.getElementById('daoShare').value = '5';
+            document.getElementById('sourceOwnerShare').value = '3';
+            
+            // Clear any warnings
+            percentageInputs.forEach(id => {
+                const input = document.getElementById(id);
+                input.style.borderColor = '';
+                input.style.backgroundColor = '';
+                const warning = document.getElementById(id + 'Warning');
+                if (warning) warning.remove();
+            });
+            
+            const totalWarning = document.getElementById('totalPercentageWarning');
+            if (totalWarning) totalWarning.remove();
+            
+            calculate();
+        });
 
         // Auto-fetch price on page load
         document.addEventListener('DOMContentLoaded', () => {
