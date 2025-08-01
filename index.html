@@ -1,0 +1,692 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pocket Network Economics Calculator</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --background: 0 0% 100%;
+            --foreground: 240 10% 3.9%;
+            --card: 0 0% 100%;
+            --card-foreground: 240 10% 3.9%;
+            --primary: 217 91% 60%; /* Pocket Network Blue */
+            --muted-foreground: 240 3.8% 46.1%;
+            --destructive: 0 84.2% 60.2%;
+            --border: 240 5.9% 90%;
+            --input: 240 5.9% 90%;
+            --ring: 217 91% 60%; /* Pocket Network Blue */
+            --chart-1: 217 91% 60%; /* Pocket Network Blue */
+            --chart-2: 45 93% 47%; /* Pocket Network Yellow */
+            --chart-4: 45 93% 47%; /* Pocket Network Yellow */
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, hsl(var(--chart-1)) 0%, hsl(var(--chart-2)) 100%);
+            min-height: 100vh;
+            color: hsl(var(--foreground));
+            line-height: 1.6;
+            padding: 0;
+            overflow-x: hidden;
+        }
+
+        .hero-section {
+            position: relative;
+            background: linear-gradient(135deg, hsl(var(--chart-1)) 0%, hsl(var(--chart-2)) 100%);
+            color: white;
+            text-align: center;
+            padding: 40px 20px 60px;
+            overflow: hidden;
+        }
+
+        .hero-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="10" cy="10" r="1" fill="rgba(255,255,255,0.1)"/><circle cx="30" cy="30" r="1" fill="rgba(255,255,255,0.1)"/><circle cx="70" cy="20" r="1" fill="rgba(255,255,255,0.1)"/><circle cx="90" cy="70" r="1" fill="rgba(255,255,255,0.1)"/><circle cx="20" cy="80" r="1" fill="rgba(255,255,255,0.1)"/></svg>') repeat;
+            animation: float 20s infinite linear;
+        }
+
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            100% { transform: translateY(-100px); }
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 1;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .logo-container {
+            margin-bottom: 1rem;
+        }
+
+        .pocket-logo {
+            height: 60px;
+            width: auto;
+            opacity: 0.9;
+        }
+
+        .hero-content h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, #ffffff 0%, #f1f5f9 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            letter-spacing: -0.02em;
+        }
+
+        .hero-content p {
+            font-size: 1.5rem;
+            opacity: 0.9;
+            margin-bottom: 2rem;
+            font-weight: 400;
+        }
+
+        .main-container {
+            position: relative;
+            background: hsl(var(--background));
+            margin-top: -40px;
+            border-radius: 32px 32px 0 0;
+            min-height: 100vh;
+            padding: 60px 40px 80px;
+            box-shadow: 0 -20px 40px rgba(0, 0, 0, 0.1);
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .calculator-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 60px;
+            margin-bottom: 80px;
+        }
+
+        .inputs-section {
+            background: hsl(var(--card));
+            border-radius: 24px;
+            padding: 40px;
+            border: 1px solid hsl(var(--border));
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.04);
+            position: sticky;
+            top: 40px;
+            height: fit-content;
+        }
+
+        .section-header {
+            margin-bottom: 32px;
+        }
+
+        .section-title {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: hsl(var(--foreground));
+            margin-bottom: 8px;
+        }
+
+        .section-subtitle {
+            color: hsl(var(--muted-foreground));
+            font-size: 1rem;
+        }
+
+        .input-groups {
+            display: grid;
+            gap: 32px;
+        }
+
+        .input-group-header {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: hsl(var(--foreground));
+            margin-bottom: 16px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid hsl(var(--border));
+        }
+
+        .input-grid {
+            display: grid;
+            gap: 20px;
+        }
+
+        .input-wrapper {
+            position: relative;
+        }
+
+        .input-label {
+            display: block;
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: hsl(var(--foreground));
+            margin-bottom: 8px;
+        }
+
+        .input-field {
+            width: 100%;
+            padding: 16px 20px;
+            border: 2px solid hsl(var(--input));
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 500;
+            background: hsl(var(--background));
+            color: hsl(var(--foreground));
+            transition: all 0.2s ease;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .input-field:focus {
+            outline: none;
+            border-color: hsl(var(--ring));
+            box-shadow: 0 0 0 4px hsl(var(--ring) / 0.1);
+            transform: translateY(-1px);
+        }
+
+        .input-field:hover {
+            border-color: hsl(var(--ring));
+        }
+
+        .results-section {
+            display: grid;
+            gap: 40px;
+        }
+
+        .results-card {
+            background: hsl(var(--card));
+            border-radius: 24px;
+            padding: 40px;
+            border: 1px solid hsl(var(--border));
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.04);
+            transition: all 0.3s ease;
+        }
+
+        .results-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 48px rgba(0, 0, 0, 0.08);
+        }
+
+        .results-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 32px;
+        }
+
+        .results-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: hsl(var(--foreground));
+        }
+
+
+
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 24px;
+        }
+
+        .metric-card {
+            background: hsl(var(--muted));
+            border-radius: 16px;
+            padding: 28px;
+            text-align: center;
+            border: 1px solid hsl(var(--border));
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .metric-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(135deg, hsl(var(--chart-1)) 0%, hsl(var(--chart-2)) 100%); /* Pocket Network Blue to Yellow */
+        }
+
+        .metric-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+        }
+
+        .metric-value {
+            font-size: 2.25rem;
+            font-weight: 800;
+            color: hsl(var(--foreground));
+            margin-bottom: 8px;
+            line-height: 1;
+        }
+
+        .metric-label {
+            font-size: 0.875rem;
+            color: hsl(var(--muted-foreground));
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            line-height: 1.2;
+            word-wrap: break-word;
+            hyphens: auto;
+        }
+
+        .rewards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 24px;
+        }
+
+        .reward-card {
+            background: hsl(var(--card));
+            border-radius: 20px;
+            padding: 32px;
+            border: 2px solid hsl(var(--border));
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .reward-card.supplier {
+            border-color: hsl(var(--chart-1)); /* Pocket Network Blue */
+            background: linear-gradient(135deg, hsl(var(--chart-1) / 0.05) 0%, hsl(var(--chart-1) / 0.02) 100%);
+        }
+
+        .reward-card.validator {
+            border-color: hsl(var(--chart-2)); /* Pocket Network Yellow */
+            background: linear-gradient(135deg, hsl(var(--chart-2) / 0.05) 0%, hsl(var(--chart-2) / 0.02) 100%);
+        }
+
+        .reward-card.dao {
+            border-color: hsl(var(--chart-3)); /* Pocket Network Blue */
+            background: linear-gradient(135deg, hsl(var(--chart-3) / 0.05) 0%, hsl(var(--chart-3) / 0.02) 100%);
+        }
+
+        .reward-card.service {
+            border-color: hsl(var(--chart-4)); /* Pocket Network Yellow */
+            background: linear-gradient(135deg, hsl(var(--chart-4) / 0.05) 0%, hsl(var(--chart-4) / 0.02) 100%);
+        }
+
+        .reward-card:hover {
+            transform: translateY(-4px) scale(1.02);
+            box-shadow: 0 16px 40px rgba(0, 0, 0, 0.12);
+        }
+
+        .reward-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+
+        .reward-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: hsl(var(--foreground));
+        }
+
+        .reward-percentage {
+            background: hsl(var(--foreground));
+            color: hsl(var(--background));
+            padding: 6px 12px;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .reward-value {
+            font-size: 2rem;
+            font-weight: 800;
+            color: hsl(var(--foreground));
+            margin-bottom: 8px;
+        }
+
+        .reward-subtitle {
+            font-size: 0.85rem;
+            color: hsl(var(--muted-foreground));
+            font-weight: 500;
+        }
+
+        @media (max-width: 1200px) {
+            .calculator-grid {
+                grid-template-columns: 1fr;
+                gap: 40px;
+            }
+
+            .inputs-section {
+                position: static;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .hero-content h1 {
+                font-size: 2rem;
+            }
+
+            .hero-content p {
+                font-size: 1.2rem;
+            }
+
+            .main-container {
+                padding: 40px 20px;
+                margin-top: -40px;
+            }
+
+            .inputs-section,
+            .results-card {
+                padding: 24px;
+            }
+
+            .metrics-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .rewards-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+
+
+        .fade-in {
+            animation: fadeIn 0.6s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+    <div class="hero-section">
+        <div class="hero-content">
+            <div class="logo-container">
+                <img src="src/img/logo-large-blue.png" alt="Pocket Network" class="pocket-logo">
+            </div>
+            <h1>Economics Calculator</h1>
+            <p>Model out protocol revenue and ecosystem rewards in real-time</p>
+        </div>
+    </div>
+
+    <div class="main-container">
+        <div class="container">
+            <div class="calculator-grid">
+                <div class="inputs-section fade-in">
+                    <div class="section-header">
+                        <h2 class="section-title">Network Parameters</h2>
+                        <p class="section-subtitle">Adjust core network metrics to model different scenarios</p>
+                    </div>
+
+                    <div class="input-groups">
+                        <div>
+                            <div class="input-group-header">Network Activity</div>
+                            <div class="input-grid">
+                                <div class="input-wrapper">
+                                    <label class="input-label" for="dailyRelays">Daily Relays</label>
+                                    <input class="input-field" type="number" id="dailyRelays" value="50000000" step="1000000">
+                                </div>
+                                <div class="input-wrapper">
+                                    <label class="input-label" for="cusPerRelay">Compute Units per Relay (Approximation)</label>
+                                    <input class="input-field" type="number" id="cusPerRelay" value="2500" step="1">
+                                </div>
+                                <div class="input-wrapper">
+                                    <label class="input-label" for="poktPrice">POKT Price ($USD)</label>
+                                    <div style="position: relative;">
+                                        <input class="input-field" type="number" id="poktPrice" value="0.043" step="0.001">
+                                        <button id="refreshPrice" style="position: absolute; right: 12px; top: 50%; transform: translateY(-50%); background: hsl(var(--chart-1)); color: white; border: none; border-radius: 6px; padding: 8px 12px; font-size: 0.75rem; cursor: pointer; transition: all 0.2s ease;">
+                                            Live
+                                        </button>
+                                    </div>
+                                    <div id="priceStatus" style="font-size: 0.75rem; margin-top: 4px; color: hsl(var(--muted-foreground));"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div>
+                            <div class="input-group-header">Reward Distribution</div>
+                            <div class="input-grid">
+                                <div class="input-wrapper">
+                                    <label class="input-label" for="supplierShare">Supplier Share (%)</label>
+                                    <input class="input-field" type="number" id="supplierShare" value="78" step="0.1">
+                                </div>
+                                <div class="input-wrapper">
+                                    <label class="input-label" for="validatorShare">Validator Share (%)</label>
+                                    <input class="input-field" type="number" id="validatorShare" value="14" step="0.1">
+                                </div>
+                                <div class="input-wrapper">
+                                    <label class="input-label" for="daoShare">DAO Share (%)</label>
+                                    <input class="input-field" type="number" id="daoShare" value="5" step="0.1">
+                                </div>
+                                <div class="input-wrapper">
+                                    <label class="input-label" for="sourceOwnerShare">Service Owner Share (%)</label>
+                                    <input class="input-field" type="number" id="sourceOwnerShare" value="3" step="0.1">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="results-section">
+                    <div class="results-card fade-in">
+                        <div class="results-header">
+                            <h3 class="results-title">Network Metrics</h3>
+                        </div>
+                        
+                        <div class="metrics-grid">
+                            <div class="metric-card">
+                                <div class="metric-value" id="dailyMint">0</div>
+                                <div class="metric-label">Daily POKT Generated</div>
+                            </div>
+                            <div class="metric-card">
+                                <div class="metric-value" id="annualMint">0</div>
+                                <div class="metric-label">Annual POKT Generated</div>
+                            </div>
+                            <div class="metric-card">
+                                <div class="metric-value" id="dailyRevenue">$0</div>
+                                <div class="metric-label">Daily Protocol Revenue</div>
+                            </div>
+                            <div class="metric-card">
+                                <div class="metric-value" id="annualRevenue">$0</div>
+                                <div class="metric-label">Annual Protocol Revenue</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="results-card fade-in">
+                        <div class="results-header">
+                            <h3 class="results-title">Annual Ecosystem Rewards</h3>
+                        </div>
+                        
+                        <div class="rewards-grid">
+                            <div class="reward-card supplier">
+                                <div class="reward-header">
+                                    <div class="reward-title">Supplier Rewards</div>
+                                    <div class="reward-percentage">78%</div>
+                                </div>
+                                <div class="reward-value" id="supplierPoolValue">$0</div>
+                                <div class="reward-subtitle">Primary infrastructure providers</div>
+                            </div>
+
+                            <div class="reward-card validator">
+                                <div class="reward-header">
+                                    <div class="reward-title">Validator Rewards</div>
+                                    <div class="reward-percentage">14%</div>
+                                </div>
+                                <div class="reward-value" id="validatorPoolValue">$0</div>
+                                <div class="reward-subtitle">Network consensus validators</div>
+                            </div>
+
+                            <div class="reward-card dao">
+                                <div class="reward-header">
+                                    <div class="reward-title">DAO Treasury</div>
+                                    <div class="reward-percentage">5%</div>
+                                </div>
+                                <div class="reward-value" id="daoPoolValue">$0</div>
+                                <div class="reward-subtitle">Governance and development</div>
+                            </div>
+
+                            <div class="reward-card service">
+                                <div class="reward-header">
+                                    <div class="reward-title">Service Owner Rewards</div>
+                                    <div class="reward-percentage">3%</div>
+                                </div>
+                                <div class="reward-value" id="sourceOwnerPoolValue">$0</div>
+                                <div class="reward-subtitle">Application developers</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function formatCurrency(num, decimals = 0) {
+            return new Intl.NumberFormat('en-US', {
+                style: 'currency',
+                currency: 'USD',
+                maximumFractionDigits: decimals
+            }).format(num);
+        }
+
+        function formatNumber(num, decimals = 0) {
+            if (num >= 1e9) {
+                return (num / 1e9).toFixed(decimals) + 'B';
+            } else if (num >= 1e6) {
+                return (num / 1e6).toFixed(decimals) + 'M';
+            } else if (num >= 1e3) {
+                return (num / 1e3).toFixed(decimals) + 'K';
+            }
+            return num.toLocaleString('en-US', { maximumFractionDigits: decimals });
+        }
+
+        // Fetch POKT price from our server API (CORS-safe)
+        async function fetchPOKTPrice() {
+            const refreshButton = document.getElementById('refreshPrice');
+            const priceInput = document.getElementById('poktPrice');
+            const statusDiv = document.getElementById('priceStatus');
+            
+            try {
+                refreshButton.textContent = '...';
+                refreshButton.disabled = true;
+                statusDiv.textContent = 'Fetching live price...';
+                statusDiv.style.color = 'hsl(var(--muted-foreground))';
+                
+                // Fetch from our server API (no CORS issues)
+                const response = await fetch('/api/pokt-price');
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
+                const data = await response.json();
+                const price = data.price;
+                
+                priceInput.value = price.toFixed(6);
+                statusDiv.textContent = `Price updated (${new Date().toLocaleTimeString()})`;
+                statusDiv.style.color = 'hsl(var(--chart-4))';
+                calculate();
+                
+            } catch (error) {
+                console.error('Price fetch error:', error);
+                statusDiv.textContent = 'Price update failed - check network connection';
+                statusDiv.style.color = 'hsl(var(--destructive))';
+                
+                // Don't update the price input, keep the current value
+                // User can manually adjust if needed
+            } finally {
+                refreshButton.textContent = 'Live';
+                refreshButton.disabled = false;
+            }
+        }
+
+        function calculate() {
+            const dailyRelays = parseFloat(document.getElementById('dailyRelays').value) || 0;
+            const cusPerRelay = parseFloat(document.getElementById('cusPerRelay').value) || 0;
+            const validatorShare = parseFloat(document.getElementById('validatorShare').value) || 0;
+            const daoShare = parseFloat(document.getElementById('daoShare').value) || 0;
+            const supplierShare = parseFloat(document.getElementById('supplierShare').value) || 0;
+            const sourceOwnerShare = parseFloat(document.getElementById('sourceOwnerShare').value) || 0;
+            const poktPrice = parseFloat(document.getElementById('poktPrice').value) || 0;
+            const daysPerYear = 365;
+
+            const dailyPoktGenerated = dailyRelays * cusPerRelay * 1e-9;
+            const annualPoktGenerated = dailyPoktGenerated * daysPerYear;
+            
+            const dailyProtocolRevenue = dailyPoktGenerated * poktPrice;
+            const annualProtocolRevenue = annualPoktGenerated * poktPrice;
+            
+            const validatorPoolValue = annualProtocolRevenue * (validatorShare / 100);
+            const daoPoolValue = annualProtocolRevenue * (daoShare / 100);
+            const supplierPoolValue = annualProtocolRevenue * (supplierShare / 100);
+            const sourceOwnerPoolValue = annualProtocolRevenue * (sourceOwnerShare / 100);
+
+
+            // Update main metrics
+            document.getElementById('dailyMint').textContent = formatNumber(dailyPoktGenerated, 2);
+            document.getElementById('annualMint').textContent = formatNumber(annualPoktGenerated, 0);
+            document.getElementById('dailyRevenue').textContent = formatCurrency(dailyProtocolRevenue, 0);
+            document.getElementById('annualRevenue').textContent = formatCurrency(annualProtocolRevenue, 0);
+            
+            // Update reward pools
+            document.getElementById('supplierPoolValue').textContent = formatCurrency(supplierPoolValue, 0);
+            document.getElementById('validatorPoolValue').textContent = formatCurrency(validatorPoolValue, 0);
+            document.getElementById('daoPoolValue').textContent = formatCurrency(daoPoolValue, 0);
+            document.getElementById('sourceOwnerPoolValue').textContent = formatCurrency(sourceOwnerPoolValue, 0);
+
+
+        }
+
+        // Add event listeners with debouncing for smooth performance
+        let timeout;
+        document.querySelectorAll('input').forEach(input => {
+            input.addEventListener('input', () => {
+                clearTimeout(timeout);
+                timeout = setTimeout(calculate, 100);
+            });
+        });
+
+        // Add price refresh functionality
+        document.getElementById('refreshPrice').addEventListener('click', fetchPOKTPrice);
+
+        // Auto-fetch price on page load
+        document.addEventListener('DOMContentLoaded', () => {
+            setTimeout(fetchPOKTPrice, 1000); // Delay to show loading state
+        });
+
+        // Initial calculation
+        calculate();
+
+        // Add smooth scroll behavior for any future navigation
+        document.documentElement.style.scrollBehavior = 'smooth';
+
+        // Add focus management for better UX
+        document.querySelectorAll('.input-field').forEach(input => {
+            input.addEventListener('focus', function() {
+                if (this.id !== 'poktPrice') {
+                    this.select();
+                }
+            });
+        });
+
+        // Auto-refresh price every 10 minutes (real API has rate limits)
+        setInterval(fetchPOKTPrice, 10 * 60 * 1000);
+    </script>
+</body>
+</html>
