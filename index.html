@@ -977,10 +977,12 @@
         // Add smooth scroll behavior for any future navigation
         document.documentElement.style.scrollBehavior = 'smooth';
 
-        // Add focus management for better UX
+        // Add focus management for better UX - only select all text when tabbing, not clicking
         document.querySelectorAll('.input-field').forEach(input => {
-            input.addEventListener('focus', function() {
-                if (this.id !== 'poktPrice') {
+            input.addEventListener('focus', function(event) {
+                // Only select all text if focus came from keyboard navigation (tab key)
+                // This allows clicking to position cursor for editing
+                if (event.detail === 0 && this.id !== 'poktPrice') {
                     this.select();
                 }
             });
